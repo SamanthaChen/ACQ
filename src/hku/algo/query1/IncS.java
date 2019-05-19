@@ -49,13 +49,13 @@ public class IncS {
 		this.queryId = queryId;
 		this.startT = System.currentTimeMillis();
 		if(core[queryId] < Config.k)   return 0;
-		int qualifiedCC = 0;//the final number of qualified communitiesc,×îºóºÏ¸ñµÄÉçÍÅ¸öÊı
+		int qualifiedCC = 0;//the final number of qualified communitiesc,æœ€ååˆæ ¼çš„ç¤¾å›¢ä¸ªæ•°
 		
 		//step 1: locate the node in the cck-core tree
-		//²½Öè1£ºËø¶¨CL-treeÖĞµÄ½Úµã
+		//æ­¥éª¤1ï¼šé”å®šCL-treeä¸­çš„èŠ‚ç‚¹
 		int minCore = Integer.MAX_VALUE;
 		Map<Integer, TNode> cckMap = locateAllCK(root);
-		//¼ÆËã×îĞ¡µÄcoreÖµ
+		//è®¡ç®—æœ€å°çš„coreå€¼
 		for(int key:cckMap.keySet()){
 			if(key < minCore){
 				minCore = key;
@@ -63,31 +63,31 @@ public class IncS {
 		}
 		
 		//step 2: generate seeds with keyword filtering
-		//²½Öè2£ºÀûÓÃ¹Ø¼ü´ÊÉ¸Ñ¡£¬Éú³ÉÖÖ×Ó½Úµã
+		//æ­¥éª¤2ï¼šåˆ©ç”¨å…³é”®è¯ç­›é€‰ï¼Œç”Ÿæˆç§å­èŠ‚ç‚¹
 		Set<String> unionSet = new HashSet<String>();
 		for(int nghId:graph[queryId]){
 			for(int j = 1;j < nodes[nghId].length;j ++){
-				unionSet.add(nodes[nghId][j]);//unionSetÄÚÊÇquery½ÚµãËùÓĞÁÚ ¾ÓµÄ¹Ø¼ü´Ê¼¯ºÏ
+				unionSet.add(nodes[nghId][j]);//unionSetå†…æ˜¯queryèŠ‚ç‚¹æ‰€æœ‰é‚» å±…çš„å…³é”®è¯é›†åˆ
 			}
 		}
-		Map<String[], Integer> candMap = new HashMap<String[], Integer>();//<ºòÑ¡µÄ¹Ø¼ü´Ê£¬core number>
+		Map<String[], Integer> candMap = new HashMap<String[], Integer>();//<å€™é€‰çš„å…³é”®è¯ï¼Œcore number>
 		for(int i = 1;i < nodes[queryId].length;i ++){
 			if(unionSet.contains(nodes[queryId][i])){
-				String kws[] = {nodes[queryId][i]};//É¸Ñ¡³öÀ´µÄ¾ÍÊÇÁÚ¾ÓºÍ×Ô¼º¶¼ÓĞµÄÊôĞÔ
-				candMap.put(kws, minCore); //[a keyword combination, minimum coreness]£¬³õÊ¼µÄÊ±ºòkwsÊÇµ¥¸ö¹Ø¼ü´Ê£¬coreÊÇ×îĞ¡µÄÄÇ¸ö
+				String kws[] = {nodes[queryId][i]};//ç­›é€‰å‡ºæ¥çš„å°±æ˜¯é‚»å±…å’Œè‡ªå·±éƒ½æœ‰çš„å±æ€§
+				candMap.put(kws, minCore); //[a keyword combination, minimum coreness]ï¼Œåˆå§‹çš„æ—¶å€™kwsæ˜¯å•ä¸ªå…³é”®è¯ï¼Œcoreæ˜¯æœ€å°çš„é‚£ä¸ª
 			}
 		}
 		System.out.println("candMap.size:" + candMap.size() + " time:" + (System.currentTimeMillis() - startT));
 		
 		//step 3: enumerate all the possible keywords
-		//²½Öè3£ºÁĞ¾ÙËùÓĞ¿ÉÄÜµÄ¹Ø¼ü´Ê
+		//æ­¥éª¤3ï¼šåˆ—ä¸¾æ‰€æœ‰å¯èƒ½çš„å…³é”®è¯
 		for(int iterK = 1;;iterK ++){
 			System.out.println("G1 queryId:" + queryId + " kws.len:" + iterK);
 			
 			//step 1: check whether each candidate can result in a ccs
-			//²½Öè1£º¼ì²âÃ¿¸öºòÑ¡µÄ¹Ø¼ü´ÊÊÇ·ñÄÜÕÒµ½Ò»¸öccs
-			List<String[]> validKwList = new ArrayList<String[]>();//ÓĞĞ§µÄ¹Ø¼ü´ÊÁĞ±í
-			List<Integer> validCoList = new ArrayList<Integer>();//ÓĞĞ§µÄcoreÖµÁĞ±í
+			//æ­¥éª¤1ï¼šæ£€æµ‹æ¯ä¸ªå€™é€‰çš„å…³é”®è¯æ˜¯å¦èƒ½æ‰¾åˆ°ä¸€ä¸ªccs
+			List<String[]> validKwList = new ArrayList<String[]>();//æœ‰æ•ˆçš„å…³é”®è¯åˆ—è¡¨
+			List<Integer> validCoList = new ArrayList<Integer>();//æœ‰æ•ˆçš„coreå€¼åˆ—è¡¨
 			for(Entry<String[], Integer> entry:candMap.entrySet()){
 				String kws[] = entry.getKey();
 				
@@ -117,7 +117,7 @@ public class IncS {
 			}
 			
 			//step 2: generate new candidates
-			//²½Öè2:²úÉúĞÂµÄºòÑ¡¼¯
+			//æ­¥éª¤2:äº§ç”Ÿæ–°çš„å€™é€‰é›†
 			Tool tool = new Tool();
 			apruner = new AprioriPruner(validKwList);
 			candMap = new HashMap<String[], Integer>();
@@ -125,26 +125,26 @@ public class IncS {
 				for(int j = i + 1;j < validKwList.size();j ++){
 					String kws1[] = validKwList.get(i);   int core1 = validCoList.get(i);
 					String kws2[] = validKwList.get(j);   int core2 = validCoList.get(j);
-					if(iterK == 1){//ºÜÃ÷ÏÔ£¬µÚÒ»´Îµü´úµÄÊ±ºò¹Ø¼ü´Ê³¤¶ÈÎª1
+					if(iterK == 1){//å¾ˆæ˜æ˜¾ï¼Œç¬¬ä¸€æ¬¡è¿­ä»£çš„æ—¶å€™å…³é”®è¯é•¿åº¦ä¸º1
 						String newKws[] = {kws1[0], kws2[0]};
 						if(kws1[0].compareTo(kws2[0]) > 0){
 							newKws[0] = kws2[0];   newKws[1] = kws1[0];
 						}
-						candMap.put(newKws, (core1 < core2 ? core1 : core2));
+						candMap.put(newKws, (core1 > core2 ? core1 : core2));
 					}else{
 						boolean isCand = true;
-						for(int ij = 0;ij < iterK - 1;ij ++){//±È½ÏÇ°k-1¸ö¹Ø¼ü´Ê£¬Òª±£Ö¤ÏàµÈ£¬×îºóÒ»¸ö²»ÏàµÈ¾Í¿ÉÒÔÁ¬½Ó³Ék+1µÄºòÑ¡¼¯ÁË
+						for(int ij = 0;ij < iterK - 1;ij ++){//æ¯”è¾ƒå‰k-1ä¸ªå…³é”®è¯ï¼Œè¦ä¿è¯ç›¸ç­‰ï¼Œæœ€åä¸€ä¸ªä¸ç›¸ç­‰å°±å¯ä»¥è¿æ¥æˆk+1çš„å€™é€‰é›†äº†
 							if(kws1[ij].equals(kws2[ij]) == false){
 								isCand = false;
 								break;
 							}
 						}
 						
-						if(isCand){//°ÑºÏÊÊµÄ¹Ø¼ü´Ê½øĞĞÁ¬½ÓÉú³ÉĞÂµÄºòÑ¡Ïî¼¯
+						if(isCand){//æŠŠåˆé€‚çš„å…³é”®è¯è¿›è¡Œè¿æ¥ç”Ÿæˆæ–°çš„å€™é€‰é¡¹é›†
 							String newKws[] = new String[iterK + 1];
 							for(int ij = 0;ij < iterK;ij ++)   newKws[ij] = kws1[ij];
 							newKws[iterK] = kws2[iterK - 1];
-							newKws = tool.sortKw(newKws); //sort the keywords,½«¹Ø¼ü´Ê½øĞĞÅÅĞò£¬°´ÕÕ×ÖµäË³Ğò
+							newKws = tool.sortKw(newKws); //sort the keywords,å°†å…³é”®è¯è¿›è¡Œæ’åºï¼ŒæŒ‰ç…§å­—å…¸é¡ºåº
 							if(!apruner.isPruned(newKws))   candMap.put(newKws, (core1 > core2 ? core1 : core2));//
 						}
 					}
@@ -157,14 +157,14 @@ public class IncS {
 	}
 	
 	//locate a list of tnodes, each of which has (1)coreness>=Config.k and (2) contains queryId
-	//Õâ¸ö¾ÍÊÇcore-locating£¬ĞèÒªÂú×ãµÄÌõ¼ş£º1.coreness²»Ğ¡ÓÚÅäÖÃÎÄ¼şÖĞµÄk 2. °üº¬queryID
+	//è¿™ä¸ªå°±æ˜¯core-locatingï¼Œéœ€è¦æ»¡è¶³çš„æ¡ä»¶ï¼š1.corenessä¸å°äºé…ç½®æ–‡ä»¶ä¸­çš„k 2. åŒ…å«queryID
 	/**
-	 * ¶¨Î»Âú×ãÌõ¼şµÄtnodes£º1.coreness²»Ğ¡ÓÚÅäÖÃÎÄ¼şÖĞµÄk¡£2.°üº¬²éÑ¯½Úµã
-	 * ·µ»ØµÄmap<core,root>
+	 * å®šä½æ»¡è¶³æ¡ä»¶çš„tnodesï¼š1.corenessä¸å°äºé…ç½®æ–‡ä»¶ä¸­çš„kã€‚2.åŒ…å«æŸ¥è¯¢èŠ‚ç‚¹
+	 * è¿”å›çš„map<core,root>
 	 * */
 	private Map<Integer, TNode> locateAllCK(TNode root){
 		//step 1: find nodes with coreNumber=Config.k using BFS
-		//²½Öè1£ºÀûÓÃ¹ã¶ÈÓÅÏÈÕÒµ½ËùÓĞcoreness=kµÄ½Úµã
+		//æ­¥éª¤1ï¼šåˆ©ç”¨å¹¿åº¦ä¼˜å…ˆæ‰¾åˆ°æ‰€æœ‰coreness=kçš„èŠ‚ç‚¹
 		List<TNode> candRootList = new ArrayList<TNode>();
 		Queue<TNode> queue = new LinkedList<TNode>(); 
 		queue.add(root);
@@ -173,16 +173,16 @@ public class IncS {
 			TNode curNode = queue.poll();
 			for(TNode tnode:curNode.getChildList()){
 				if(tnode.getCore() < Config.k){
-					queue.add(tnode);//Ğ¡ÓÚkµÄÍùÏÂ²é
+					queue.add(tnode);//å°äºkçš„å¾€ä¸‹æŸ¥
 				}else{//the candidate root node must has coreness at least Config.k
-					candRootList.add(tnode);//´óÓÚµÈÓÚkµÄ¼ÓÈëºòÑ¡
+					candRootList.add(tnode);//å¤§äºç­‰äºkçš„åŠ å…¥å€™é€‰
 				}
 			}
 		}
 //		System.out.println("candRootList.size:" + candRootList.size());
 		
 		//step 2: locate a list of ck-cores
-		//²½Öè2£º¶¨Î»Ò»Ìõ°üº¬query½ÚµãµÄÂ·¾¶µÄµã
+		//æ­¥éª¤2ï¼šå®šä½ä¸€æ¡åŒ…å«queryèŠ‚ç‚¹çš„è·¯å¾„çš„ç‚¹
 		Map<Integer, TNode> cckMap = null;
 		for(TNode tnode:candRootList){
 			cckMap = findCK(tnode);
@@ -197,21 +197,21 @@ public class IncS {
 	
 	//check whether a subtree rooted at "root" contains queryId or not
 	/**
-	 * Õâ¸ö·½·¨ÊÇ·µ»ØÒ»¸ö<core£¬°üº¬query½ÚµãµÄÊ÷½Úµã>
-	 * °ÑDFSÕÒµ½°üº¬query½ÚµãµÄÂ·¾¶ÉÏ¾­¹ıµÄµã¶¼±£´æÆğÀ´£¬ÒâË¼ÊÇÕÒÒ»¸öÁªÏµµ½query½ÚµãµÄÁ¬Í¨·ÖÁ¿£¿
+	 * è¿™ä¸ªæ–¹æ³•æ˜¯è¿”å›ä¸€ä¸ª<coreï¼ŒåŒ…å«queryèŠ‚ç‚¹çš„æ ‘èŠ‚ç‚¹>
+	 * æŠŠDFSæ‰¾åˆ°åŒ…å«queryèŠ‚ç‚¹çš„è·¯å¾„ä¸Šç»è¿‡çš„ç‚¹éƒ½ä¿å­˜èµ·æ¥ï¼Œæ„æ€æ˜¯æ‰¾ä¸€ä¸ªè”ç³»åˆ°queryèŠ‚ç‚¹çš„è¿é€šåˆ†é‡ï¼Ÿ
 	 * */
 	private Map<Integer, TNode> findCK(TNode root){
-		if(root.getCore() <= core[queryId]){//Êµ¼ÊÉÏ´«µİ¹ıÀ´µÄrootµÄcoreÖ»ÄÜ´óÓÚµÈÓÚk£¬ËùÒÔÕâÀïÊÇµÈÓÚkµÄÇé¿ö
+		if(root.getCore() <= core[queryId]){//å®é™…ä¸Šä¼ é€’è¿‡æ¥çš„rootçš„coreåªèƒ½å¤§äºç­‰äºkï¼Œæ‰€ä»¥è¿™é‡Œæ˜¯ç­‰äºkçš„æƒ…å†µ
 			if(root.getNodeSet().contains(queryId)){
 				Map<Integer, TNode> cckMap = new HashMap<Integer, TNode>();
 				cckMap.put(root.getCore(), root);
 				return cckMap;
-			}else{//ÕâÀïÊÇ´óÓÚk£¬ËùÒÔÕÒº¢×Ó½Úµã
+			}else{//è¿™é‡Œæ˜¯å¤§äºkï¼Œæ‰€ä»¥æ‰¾å­©å­èŠ‚ç‚¹
 				Map<Integer, TNode> cckMap = null;
 				for(TNode tnode:root.getChildList()){
-					cckMap = findCK(tnode);//DFSÕÒ
+					cckMap = findCK(tnode);//DFSæ‰¾
 					if(cckMap != null){
-						cckMap.put(root.getCore(), root);//°ÑDFSÕÒµ½°üº¬query½ÚµãµÄÂ·¾¶ÉÏ¾­¹ıµÄµã¶¼±£´æÆğÀ´
+						cckMap.put(root.getCore(), root);//æŠŠDFSæ‰¾åˆ°åŒ…å«queryèŠ‚ç‚¹çš„è·¯å¾„ä¸Šç»è¿‡çš„ç‚¹éƒ½ä¿å­˜èµ·æ¥
 						break;
 					}
 				}
@@ -225,11 +225,11 @@ public class IncS {
 	
 	//find a context community
 	/**
-	 * find a context community£¨ÕÒµ½Ò»¸ö°üº¬¹Ø¼ü´ÊµÄÉçÍÅ¼¯ºÏ£¿£©
+	 * find a context communityï¼ˆæ‰¾åˆ°ä¸€ä¸ªåŒ…å«å…³é”®è¯çš„ç¤¾å›¢é›†åˆï¼Ÿï¼‰
 	 * */
 	private Set<Integer> findCCS(String kws[], TNode root){
 		//step 1: keyword filtering
-		//²½Öè1£º¹Ø¼ü´ÊÉ¸Ñ¡
+		//æ­¥éª¤1ï¼šå…³é”®è¯ç­›é€‰
 		Set<Integer> targetNodeSet = new HashSet<Integer>();
 		Queue<TNode> queue = new LinkedList<TNode>(); 
 		queue.add(root);
@@ -237,13 +237,13 @@ public class IncS {
 			TNode curNode = queue.poll();
 			
 			//intersection on the inverted list
-			//ÊôĞÔµ¹ÅÅµÄ½»¼¯
+			//å±æ€§å€’æ’çš„äº¤é›†
 			Map<String, int[]> kwMap = curNode.getKwMap();
 			Set<Integer> intersecSet = new HashSet<Integer>();
 			boolean isFirst = true;
 			for(int i = 0;i < kws.length;i ++){
 				if(kwMap.containsKey(kws[i])){
-					int invert[] = kwMap.get(kws[i]);//»ñµÃ°üº¬kws[i]µÄ½Úµã
+					int invert[] = kwMap.get(kws[i]);//è·å¾—åŒ…å«kws[i]çš„èŠ‚ç‚¹
 					if(isFirst){
 						isFirst = false;
 						for(int j = 0;j < invert.length;j ++)   intersecSet.add(invert[j]);
@@ -257,26 +257,26 @@ public class IncS {
 						intersecSet = tmpSet;
 					}
 				}else{//this keyword is not contained. Skip all the nodes!!!
-					//ÈôÊÇkwMap¶¼²»°üº¬£¬ÕâĞ©¹Ø¼ü´Ê£¬Ö±½ÓÌø¹ıËùÓĞµÄ½Úµã
+					//è‹¥æ˜¯kwMapéƒ½ä¸åŒ…å«ï¼Œè¿™äº›å…³é”®è¯ï¼Œç›´æ¥è·³è¿‡æ‰€æœ‰çš„èŠ‚ç‚¹
 					intersecSet = null;
 					break;
 				}
 			}
-			if(intersecSet != null)   targetNodeSet.addAll(intersecSet);//collect all the candidate nodes£¬ËÑ¼¯ËùÓĞµÄºòÑ¡½Úµã
-			for(TNode tnode:curNode.getChildList())   queue.add(tnode);//¼ÌĞø¼ì²éº¢×Ó½Úµã
+			if(intersecSet != null)   targetNodeSet.addAll(intersecSet);//collect all the candidate nodesï¼Œæœé›†æ‰€æœ‰çš„å€™é€‰èŠ‚ç‚¹
+			for(TNode tnode:curNode.getChildList())   queue.add(tnode);//ç»§ç»­æ£€æŸ¥å­©å­èŠ‚ç‚¹
 		}
 			
 		// count the number of nodes and edges
-		//¼ÆËã½ÚµãºÍ±ßµÄÊıÄ¿
+		//è®¡ç®—èŠ‚ç‚¹å’Œè¾¹çš„æ•°ç›®
 		FindCC findCC = new FindCC(graph, targetNodeSet, queryId);
-		Set<Integer> ccNodeSet = findCC.findCC();//ÕÒµ½Ä¿±ê¼¯ºÏÄÚµÄÁ¬Í¨·ÖÁ¿
+		Set<Integer> ccNodeSet = findCC.findCC();//æ‰¾åˆ°ç›®æ ‡é›†åˆå†…çš„è¿é€šåˆ†é‡
 		int nodeNum = ccNodeSet.size();
 		int edgeNum = findCC.getEdge();
 		
 		//find the ccs
-		//ÕÒµ½Gk[S',q]
+		//æ‰¾åˆ°Gk[S',q]
 		Set<Integer> ccsSet = new HashSet<Integer>();
-		if(edgeNum - nodeNum >= (Config.k * Config.k - Config.k) / 2 - 1){//¼ôÖ¦µÄÒ»¸ö¶¨Àí£¬¼ì²âÊÇ·ñÄÜÉú³Ék-core
+		if(edgeNum - nodeNum >= (Config.k * Config.k - Config.k) / 2 - 1){//å‰ªæçš„ä¸€ä¸ªå®šç†ï¼Œæ£€æµ‹æ˜¯å¦èƒ½ç”Ÿæˆk-core
 			List<Integer> curList = new ArrayList<Integer>();//this list serves as a map (newID -> original ID)
 			curList.add(-1);//for consuming space purpose
 			curList.addAll(ccNodeSet);
